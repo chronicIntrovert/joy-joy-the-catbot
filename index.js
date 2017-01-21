@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const request = require('request');
+const request = require('request-promise');
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -34,7 +34,7 @@ app.post('/webhook', (req, res) => {
 });
 
 request.post({
-    url: 'https://graph.facebook.com/v2.6/me/thread_settings',
+    uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
     qs: {
         access_token: process.env.PAGE_ACCESS_TOKEN,
         setting_type: 'call_to_actions',
@@ -58,7 +58,7 @@ function sendMessage(event) {
     let text = event.message.text;
 
     request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
+        uri: 'https://graph.facebook.com/v2.6/me/messages',
         qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
         method: 'POST',
         json: {
@@ -78,7 +78,7 @@ function sendCat(event) {
     let sender = event.sender.id;
 
     request({
-        url: 'http://api.giphy.com/v1/gifs/random',
+        uri: 'http://api.giphy.com/v1/gifs/random',
         qs: {
             api_key: 'dc6zaTOxFJmzC',
             tag: 'cat'
@@ -86,16 +86,16 @@ function sendCat(event) {
         json: true
     }).then((data) => {
         request({
-            url: 'https://graph.facebook.com/v2.6/me/messages',
+            uri: 'https://graph.facebook.com/v2.6/me/messages',
             qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
             method: 'POST',
-            json: {
-                recipient: { id: sender },
-                message: {
-                    attachment: {
-                        type: image,
-                        payload: {
-                            url: data.image_url
+            body: {
+                "recipient": { "id": sender },
+                "message": {
+                    "attachment": {
+                        "type": 'image',
+                        "payload": {
+                            "url": data.image_url
                         }
                     }
                 }

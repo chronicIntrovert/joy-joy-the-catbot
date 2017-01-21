@@ -12,6 +12,7 @@
     "body-parser": "^1.16.0",
     "express": "^4.14.0",
     "facebook-messenger-bot": "0.2.0",
-    "request": "^2.79.0"
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1"
   }
 }
