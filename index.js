@@ -46,7 +46,7 @@ request.post({
     method: 'POST',
     json: true
 }, function(err, res) {
-    if (error) {
+    if (err) {
         console.log('Error sending message: ', error);
     } else if (response.body.error) {
         console.log('Error: ', response.body.error);
