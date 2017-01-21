@@ -52,7 +52,7 @@ app.post('/webhook/', function(req, res) {
     res.sendStatus(200);
 });
 
-var token = ' enter token here';
+var token = process.env.PAGE_ACCESS_TOKEN;
 
 // function to echo back messages - added by Stefan
 function sendTextMessage(sender, text) {
