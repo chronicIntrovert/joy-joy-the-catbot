@@ -63,7 +63,7 @@ function sendTextMessage(sender, text) {
         text: text
     }
     request({
-        url: 'https://graph.facebook.com/v2.6/me/...',
+        url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: { access_token: token },
         method: 'POST',
         json: {
@@ -91,10 +91,10 @@ function sendGenericMessage(sender) {
                 "elements": [{
                     "title": "Ai Chat Bot Communities",
                     "subtitle": "Communities to Follow",
-                    "image_url": "http://1u88jj3r4db2x4txp44yqfj1.wpengine.netdna-cdn.com/...",
+                    "image_url": "http://1u88jj3r4db2x4txp44yqfj1.wpengine.netdna-cdn.com/wp-content/uploads/2016/04/chatbot-930x659.jpg",
                     "buttons": [{
                         "type": "web_url",
-                        "url": "https://www.facebook.com/groups/aic...",
+                        "url": "https://www.facebook.com/groups/aichatbots/",
                         "title": "FB Chatbot Group"
                     }, {
                         "type": "web_url",
@@ -108,7 +108,7 @@ function sendGenericMessage(sender) {
                 }, {
                     "title": "Chatbots FAQ",
                     "subtitle": "Aking the Deep Questions",
-                    "image_url": "https://tctechcrunch2011.files.wordpress.com/...",
+                    "image_url": "https://tctechcrunch2011.files.wordpress.com/2016/04/facebook-chatbots.png?w=738",
                     "buttons": [{
                         "type": "postback",
                         "title": "What's the benefit?",
@@ -125,7 +125,7 @@ function sendGenericMessage(sender) {
                 }, {
                     "title": "Learning More",
                     "subtitle": "Aking the Deep Questions",
-                    "image_url": "http://www.brandknewmag.com/wp-cont...",
+                    "image_url": "http://www.brandknewmag.com/wp-content/uploads/2015/12/cortana.jpg",
                     "buttons": [{
                         "type": "postback",
                         "title": "AIML",
@@ -144,7 +144,7 @@ function sendGenericMessage(sender) {
         }
     }
     request({
-        url: 'https://graph.facebook.com/v2.6/me/...',
+        url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: { access_token: token },
         method: 'POST',
         json: {
