@@ -48,8 +48,8 @@ request.post({
 }, function(err, res) {
     if (err) {
         console.log('Error sending message: ', error);
-    } else if (response.body.error) {
-        console.log('Error: ', response.body.error);
+    } else if (res.body.error) {
+        console.log('Error: ', res.body.error);
     }
 });
 
