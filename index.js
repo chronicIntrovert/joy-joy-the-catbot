@@ -70,8 +70,8 @@ function sendTextMessage(sender, text) {
                 console.log('Error: ', response.body.error);
             }
         },
-    );
-}
+    )
+};
 
 // Send an test message back as two cards.
 function sendGenericMessage(sender) {
