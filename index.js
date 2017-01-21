@@ -25,11 +25,31 @@ app.post('/webhook', (req, res) => {
         req.body.entry.forEach((entry) => {
             entry.messaging.forEach((event) => {
                 if (event.message && event.message.text) {
-                    sendMessage(event);
+                    sendCat(event);
                 }
             });
         });
         res.status(200).end();
+    }
+});
+
+request.post({
+    url: 'https://graph.facebook.com/v2.6/me/thread_settings',
+    qs: {
+        access_token: process.env.PAGE_ACCESS_TOKEN,
+        setting_type: 'call_to_actions',
+        thread_state: 'new_thread',
+        call_to_actions: [{
+            payload: 'GET_START'
+        }]
+    },
+    method: 'POST',
+    json: true
+}, function(err, res) {
+    if (error) {
+        console.log('Error sending message: ', error);
+    } else if (response.body.error) {
+        console.log('Error: ', response.body.error);
     }
 });
 
@@ -51,5 +71,43 @@ function sendMessage(event) {
         } else if (response.body.error) {
             console.log('Error: ', response.body.error);
         }
+    });
+}
+
+function sendCat(event) {
+    let sender = event.sender.id;
+
+    request({
+        url: 'http://api.giphy.com/v1/gifs/random',
+        qs: {
+            api_key: 'dc6zaTOxFJmzC',
+            tag: 'cat'
+        },
+        json: true
+    }).then((data) => {
+        request({
+            url: 'https://graph.facebook.com/v2.6/me/messages',
+            qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
+            method: 'POST',
+            json: {
+                recipient: { id: sender },
+                message: {
+                    attachment: {
+                        type: image,
+                        payload: {
+                            url: data.image_url
+                        }
+                    }
+                }
+            }
+        }, function(error, response) {
+            if (error) {
+                console.log('Error sending message: ', error);
+            } else if (response.body.error) {
+                console.log('Error: ', response.body.error);
+            }
+        });
+    }).catch((err) => {
+        console.log(err);
     });
 }
