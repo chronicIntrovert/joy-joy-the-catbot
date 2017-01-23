@@ -25,31 +25,12 @@ app.post('/webhook', (req, res) => {
         req.body.entry.forEach((entry) => {
             entry.messaging.forEach((event) => {
                 if (event.message && event.message.text) {
+                    sendMessage(event);
                     sendCat(event);
                 }
             });
         });
         res.status(200).end();
-    }
-});
-
-request.post({
-    uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
-    qs: {
-        access_token: process.env.PAGE_ACCESS_TOKEN,
-        setting_type: 'call_to_actions',
-        thread_state: 'new_thread',
-        call_to_actions: [{
-            payload: 'GET_START'
-        }]
-    },
-    method: 'POST',
-    json: true
-}, function(err, res) {
-    if (err) {
-        console.log('Error sending message: ', error);
-    } else if (res.body.error) {
-        console.log('Error: ', res.body.error);
     }
 });
 
@@ -63,7 +44,7 @@ function sendMessage(event) {
         method: 'POST',
         json: {
             recipient: { id: sender },
-            message: { text: text }
+            message: { text: "Joy Joy went off to fetch you one of her friends, please wait as she scurries off for a bit..." }
         }
     }, function(error, response) {
         if (error) {
@@ -89,13 +70,13 @@ function sendCat(event) {
             uri: 'https://graph.facebook.com/v2.6/me/messages',
             qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
             method: 'POST',
-            body: {
+            json: {
                 "recipient": { "id": sender },
                 "message": {
                     "attachment": {
-                        "type": 'image',
+                        "type": "image",
                         "payload": {
-                            "url": data.image_url
+                            "url": data.data.image_url
                         }
                     }
                 }
