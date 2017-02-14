@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-import express from 'express';
 import { Bot, Elements } from 'facebook-messenger-bot';
 
 const bot = new Bot(process.env.PAGE_ACCESS_TOKEN, process.env.VERIFY_TOKEN);
