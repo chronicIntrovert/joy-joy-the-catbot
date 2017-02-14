@@ -15,5 +15,5 @@ bot.on('message', async message => {
 });
 
 const app = express();
-app.use('/facebook', bot.router());
+app.use('/webhook', bot.router());
 app.listen(3000);
