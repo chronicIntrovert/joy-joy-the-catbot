@@ -6,13 +6,10 @@ const bot = new Bot(process.env.PAGE_ACCESS_TOKEN, process.env.VERIFY_TOKEN);
 
 bot.on('message', async message => {
     const { sender } = message;
-    console.log(`Received a message from ${sender.id}`);
-
     await sender.fetch('first_name');
-    console.log(`Fetched ${sender.first_name}`);
 
     const out = new Elements();
-    out.add({ text: `Hey ${sender.first_name}, how are you?` });
+    out.add({ text: `hey ${sender.first_name}, how are you!` });
 
     await bot.send(sender.id, out);
 });
