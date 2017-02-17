@@ -24,6 +24,7 @@ app.post('/webhook', (req, res) => {
         req.body.entry.forEach((entry) => {
             entry.messaging.forEach((event) => {
                 if (event.message && event.message.text) {
+                    prepareMessage(event);
                     sendMessage(event);
                     sendCat(event);
                 }
@@ -33,28 +34,53 @@ app.post('/webhook', (req, res) => {
     }
 });
 
-function sendMessage(event) {
+function prepareMessage(event) {
     let sender = event.sender.id;
-    let text = event.message.text;
 
     const options = {
         uri: 'https://graph.facebook.com/v2.6/me/messages',
         qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
         method: 'POST',
         json: {
-            recipient: { id: sender },
-            message: { text: "Joy Joy went off to fetch you one of her friends, please wait as she scurries off for a bit..." }
+            "recipient": { id: sender },
+            "sender_action": "mark_seen"
+        }
+    }
+
+    request(options).then(response => {
+        if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        }
+    }).catch(error => {
+        console.log('Error preparing message: ', error);
+    });
+}
+
+function sendMessage(event) {
+    let sender = event.sender.id;
+    let text = "Joy Joy went off to fetch you one of her friends, please wait as she scurries off for a bit...";
+
+    const options = {
+        uri: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
+        method: 'POST',
+        json: {
+            "recipient": { id: sender },
+            "message": { text: text },
+            "sender_action": "typing_on"
         }
     };
 
     request(options).then(response => {
-        console.log('Error: ', response.body.error);
+        if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        }
     }).catch(error => {
         console.log('Error sending message: ', error);
     });
 }
 
-function retrieveCat(data) {
+function sendCat(data) {
     const options = {
         uri: 'https://graph.facebook.com/v2.6/me/messages',
         qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
@@ -73,13 +99,15 @@ function retrieveCat(data) {
     };
 
     request(options).then(response => {
-        console.log('Error: ', response.body.error);
+        if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        }
     }).catch(error => {
         console.log('Error sending message: ', error);
     });
 }
 
-function sendCat(event) {
+function retrieveCat(event) {
     let sender = event.sender.id;
 
     const options = {
