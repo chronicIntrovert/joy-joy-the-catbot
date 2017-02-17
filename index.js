@@ -39,7 +39,6 @@ app.post('/webhook', (req, res) => {
                             retrieveCat(event);
                         }, 1000);
                     }, 3000);
-                    // TODO: Debounce requests in case app is hung up 
                 }
             });
         });
