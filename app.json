@@ -1,0 +1,23 @@
+{
+  "name": "joy-joy-the-catbot",
+  "scripts": {
+  },
+  "env": {
+    "PAGE_ACCESS_TOKEN": {
+      "required": true
+    },
+    "VERIFY_TOKEN": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
