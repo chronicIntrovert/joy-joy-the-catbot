@@ -80,7 +80,7 @@ function sendMessage(event) {
     });
 }
 
-function sendCat(event, data) {
+function sendCat(event, gif) {
     let sender = event.sender.id;
 
     const options = {
@@ -93,7 +93,7 @@ function sendCat(event, data) {
                 "attachment": {
                     "type": "image",
                     "payload": {
-                        "url": data.data.image_url
+                        "url": gif.data.image_url
                     }
                 }
             }
