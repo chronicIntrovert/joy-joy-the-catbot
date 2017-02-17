@@ -9,6 +9,10 @@ const server = app.listen(process.env.PORT || 3000, () => {
     console.log('Express server listening on port %d in %s mode', server.address().port, app.settings.env);
 });
 
+app.get('/', (req, res) => {
+    res.redirect('https://m.me/joyjoythecatbot');
+});
+
 app.get('/webhook', (req, res) => {
     if (req.query['hub.mode'] && req.query['hub.verify_token'] === process.env.VERIFY_TOKEN) {
         res.status(200).send(req.query['hub.challenge']);
