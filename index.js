@@ -23,20 +23,51 @@ app.get('/webhook', (req, res) => {
 
 /* Handling all messages */
 app.post('/webhook', (req, res) => {
-    console.log(req.body);
     if (req.body.object === 'page') {
-        req.body.entry.forEach((entry) => {
-            entry.messaging.forEach((event) => {
-                if (event.message && event.message.text) {
-                    prepareMessage(event);
-                    sendMessage(event);
-                    sendCat(event);
+        req.body.entry.forEach(entry => {
+            entry.messaging.forEach(event => {
+                if (event.message && (event.message.text || event.message.attachments)) {
+                    acknowlegeMessageReceived(event);
+                    setTimeout(() => {
+                        prepareMessage(event);
+                    }, 1000);
+                    setTimeout(() => {
+                        sendMessage(event);
+                        cleanMessageState(event);
+                        setTimeout(() => {
+                            prepareMessage(event);
+                            retrieveCat(event);
+                        }, 1000);
+                    }, 3000);
+                    // TODO: Debounce requests in case app is hung up 
                 }
             });
         });
         res.status(200).end();
     }
 });
+
+function acknowlegeMessageReceived(event) {
+    let sender = event.sender.id;
+
+    const options = {
+        uri: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
+        method: 'POST',
+        json: {
+            "recipient": { id: sender },
+            "sender_action": "mark_seen"
+        }
+    }
+
+    request(options).then(response => {
+        if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        }
+    }).catch(error => {
+        console.log('Error preparing message: ', error);
+    });
+}
 
 function prepareMessage(event) {
     let sender = event.sender.id;
@@ -47,7 +78,7 @@ function prepareMessage(event) {
         method: 'POST',
         json: {
             "recipient": { id: sender },
-            "sender_action": "mark_seen"
+            "sender_action": "typing_on"
         }
     }
 
@@ -70,8 +101,7 @@ function sendMessage(event) {
         method: 'POST',
         json: {
             "recipient": { id: sender },
-            "message": { text: text },
-            "sender_action": "typing_on"
+            "message": { text: text }
         }
     };
 
@@ -81,6 +111,28 @@ function sendMessage(event) {
         }
     }).catch(error => {
         console.log('Error sending message: ', error);
+    });
+}
+
+function cleanMessageState(event) {
+    let sender = event.sender.id;
+
+    const options = {
+        uri: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
+        method: 'POST',
+        json: {
+            "recipient": { id: sender },
+            "sender_action": "typing_off"
+        }
+    }
+
+    request(options).then(response => {
+        if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        }
+    }).catch(error => {
+        console.log('Error preparing message: ', error);
     });
 }
 
@@ -114,7 +166,6 @@ function sendCat(event, gif) {
 }
 
 function retrieveCat(event) {
-
     const options = {
         uri: 'http://api.giphy.com/v1/gifs/random',
         qs: {
@@ -125,8 +176,13 @@ function retrieveCat(event) {
     };
 
     request(options).then(data => {
-        retrieveCat(event, data);
+        sendCat(event, data.body);
     }).catch((error) => {
-        console.log('Error retrieveing cat GIF from Giphy: ', error);
+        console.log('Error retrieving cat GIF from Giphy: ', error);
     });
 }
+
+process.on('uncaughtException', error => {
+    console.log('An application error occurred: ', error);
+    process.exit(1);
+});
