@@ -80,7 +80,9 @@ function sendMessage(event) {
     });
 }
 
-function sendCat(data) {
+function sendCat(event, data) {
+    let sender = event.sender.id;
+
     const options = {
         uri: 'https://graph.facebook.com/v2.6/me/messages',
         qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
@@ -108,7 +110,6 @@ function sendCat(data) {
 }
 
 function retrieveCat(event) {
-    let sender = event.sender.id;
 
     const options = {
         uri: 'http://api.giphy.com/v1/gifs/random',
@@ -120,7 +121,7 @@ function retrieveCat(event) {
     };
 
     request(options).then(data => {
-        retrieveCat(data);
+        retrieveCat(event, data);
     }).catch((error) => {
         console.log('Error retrieveing cat GIF from Giphy: ', error);
     });
